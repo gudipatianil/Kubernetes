@@ -1,0 +1,116 @@
+LAUNCH TWO INSTANCES name as MASTER AND WORKER
+AMI:- UBUNTU & version :- 22.04
+INSTANCE TYPE:- T2.MEDIUM
+SECURITY GROUP
+CHANGE THE HOSTNAME
+INSTALL THE KUBERNETS SCRIPT IN vi kube.sh
+RUN THE CODE sh kube.sh
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Execute on only master node:-
+
+$ sudo kubeadm config images pull
+
+$ sudo kubeadm init
+                                                                              # kubectl get nodes --> to check which nodes are connected               
+copy and paste it in the  master node 
+
+  mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+
+
+IN Worekr node:-
+
+ sudo kubeadm reset pre-flight checks
+
+copy tokens from master node and paste it in the worker node 
+
+
+only in the master node:
+when you complete all above procedure:
+
+kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.0/manifests/calico.yaml
+
+
+
+CREATE ONE POD WITH ONE CONTAINER WITH THE IMAGE OF UBUNTU:-
+vi pod.yml:-
+kind: Pod    --> it is a kind of pod object
+apiVersion: v1
+metadata:
+  name: jspiders
+spec:
+  containers:
+    - name: sample1
+      image: ubuntu
+      command: ["/bin/bash", "-c", "while true; do echo Hi everyone; sleep 5; done"]
+  restartPolicy: Never     #Default to Always
+-> # kubectl apply -f pod.yml
+-> # kubectl get pods --> To check the pods
+-> # kubectl get pods -o wide  --> t0 check the pods with detailed information
+-> # kubectl describe pod jspiders  --> With the detailed info about the jspiders 
+-> # kubectl logs -f jspiders
+-> # kubectl delete -f pod.yml --> to delete the pod.yml
+
+No resourcs found in default namespace.
+
+
+ONE POD WITH TWO CONTAINERS"-
+
+vi pod.yml
+
+kind: Pod    --> it is a kind of pod object
+apiVersion: v1
+metadata:
+  name: jspiders
+spec:
+  containers:
+    - name: c1
+      image: ubuntu
+      command: ["/bin/bash", "-c", "while true; do echo Hi everyone; sleep 5; done"]
+    - name: c2
+      image: ubuntu
+      command: ["/bin/bash", "-c", "while true; do echo Hi everyone; sleep 5; done"]
+
+  restartPolicy: Never     #Default to Always
+
+-> # cat pod.yml
+-> # kubectl apply -f pod.yml  --> To run the pod with two containers
+-> # kubectl get pods
+-> # kubectl describe pod jspiders
+-> # kubectl log -f 
+-> # kubectl delete -f pod.yml
+
+create one pod with one container
+
+
+REPLICATION CONTROLLER:-
+	
+apiVersion: v1
+kind: ReplicationController
+metadata: 
+  name: flipkart
+spec:
+   replicas: 2
+   selector:
+     app: nginx
+    template:
+      metadata:
+        name: signup      mobile
+
